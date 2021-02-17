@@ -14,6 +14,15 @@ class HashMap {
         }
         return this._hashTable[index].value;
     }
+
+    check(key) {
+        const index = this._findSlot(key);
+        if (this._hashTable[index] === undefined) {
+            return false;
+        } else {
+            return this._hashTable[index].value;
+        }
+    }
     
 
     // Add items to the hash map
@@ -21,11 +30,13 @@ class HashMap {
 
         // calculate current load ratio (before trying to add new key/value)
         const loadRatio = (this.length + this._deleted + 1) / this._capacity;
+        //console.log(`Current loadRatio is ${loadRatio}.`);
+        //console.log(`Max loadRatio is ${this.MAX_LOAD_RATIO}.`)
 
         // if exceed max...
-        if (loadRatio > HashMap.MAX_LOAD_RATIO) {
+        if (loadRatio > this.MAX_LOAD_RATIO) {
             // need to resize
-            this._resize(this._capacity * HashMap.SIZE_RATIO);
+            this._resize(this._capacity * this.SIZE_RATIO);
         }
 
         // find appropriate slot for the key
@@ -85,6 +96,11 @@ class HashMap {
             if (slot === undefined || (slot.key === key && !slot.DELETED)) {
                 return index;
             }
+            // ^^ if key already exists in table, this seems to over-write the existing value with new value.
+            //    Is this the desired outcome? 
+            // If do NOT want this, and want a new key/value pair to get its own unique slot,
+            //    I swapped in the following if clause that worked: 
+            //    if (slot === undefined || (slot.DELETED)) {...
 
         }
     }
